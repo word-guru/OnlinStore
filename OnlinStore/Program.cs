@@ -22,4 +22,11 @@ app.MapPost("/catalog/add_product", (Product product, HttpContext context) =>
     context.Response.StatusCode = 201;
 });
 
+app.MapPost("/catalog/clear", (HttpContext context) =>
+{
+    catalog.Products.Clear();
+    context.Response.StatusCode = 202;
+});
+
+
 app.Run();
