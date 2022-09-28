@@ -27,11 +27,11 @@ public class Catalog
         }
     }
 
-    public List<Product> GetProducts()
+    public IReadOnlyList<Product> GetProducts()
     {
         lock (_syncObj)
         {
-            return Products;
+            return Products.ToList(); //копирование
         }
     }
 }
