@@ -1,10 +1,11 @@
-﻿using OnlinStore.Models;
+﻿using System.Collections.Concurrent;
+using OnlinStore.Models;
 
 namespace OnlinStore;
 
 public class Catalog
 {
-    private List<Product> Products { get; set; } = new()
+    private ConcurrentBag<Product> Products { get; set; } = new()
     {
         new Product(1, "Чистый код", 123),
         new Product(2, "Lift", 231),
@@ -14,24 +15,15 @@ public class Catalog
 
     public void AddProduct(Product product)
     {
-        lock (_syncObj)
-        {
-            Products.Add(product);
-        }
+        Products.Add(product);
     }
     public void ClearProduct()
     {
-        lock (_syncObj)
-        {
             Products.Clear();
-        }
     }
 
     public IReadOnlyList<Product> GetProducts()
     {
-        lock (_syncObj)
-        {
             return Products.ToList(); //копирование
-        }
     }
 }
