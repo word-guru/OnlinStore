@@ -1,9 +1,10 @@
 ﻿using System.Collections.Concurrent;
+using OnlinStore.Interface;
 using OnlinStore.Models;
 
 namespace OnlinStore;
 
-public class Catalog
+public class InMemoryCatalog : ICatalog
 {
     private ConcurrentBag<Product> Products { get; set; } = new()
     {
@@ -11,7 +12,6 @@ public class Catalog
         new Product(2, "Lift", 231),
         new Product(3, "Maus", 312)
     };
-    private readonly object _syncObj = new();
 
     public void AddProduct(Product product)
     {
@@ -24,6 +24,11 @@ public class Catalog
 
     public IReadOnlyList<Product> GetProducts()
     {
+       
+        if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+        {
+            return Products.Select(product => new Product(product.Id,product.Name,product.Price * 1.5m)).ToList();
+        }
             return Products.ToList(); //копирование
     }
 }
