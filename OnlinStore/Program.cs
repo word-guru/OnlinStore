@@ -10,6 +10,7 @@ builder.Services.Configure<JsonOptions>(options => { options.SerializerOptions.W
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ICatalog, InMemoryCatalog>();
+builder.Services.AddScoped<IEmailSender, MailKitEmailSender>();
 
 var app = builder.Build();
 
@@ -18,7 +19,8 @@ app.UseSwaggerUI();
 
 //var catalog = app.Services.GetService<ICatalog>();
 
-//app.MapGet("/", () => "Hello World!");
+app.MapGet("/", (IEmailSender sender,string message,string subject) => sender.Send("PV011","asp2022pd011@rodion-m.ru","legeon48@mail.ru",
+    subject,message));
 app.MapGet("/catalog", (ICatalog catalog) =>
 {
     return catalog.GetProducts();
@@ -35,6 +37,5 @@ app.MapPost("/catalog/clear_product", (ICatalog catalog,HttpContext context) =>
     catalog.ClearProduct();
     context.Response.StatusCode = 202;
 });
-
 
 app.Run();
