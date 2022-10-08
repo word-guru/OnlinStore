@@ -10,6 +10,7 @@ builder.Services.Configure<JsonOptions>(options => { options.SerializerOptions.W
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ICatalog, InMemoryCatalog>();
+builder.Services.AddSingleton<ITimeInUTC, TimeInUTC>();
 builder.Services.AddScoped<IEmailSender, MailKitEmailSender>();
 
 var app = builder.Build();
@@ -37,5 +38,6 @@ app.MapPost("/catalog/clear_product", (ICatalog catalog,HttpContext context) =>
     catalog.ClearProduct();
     context.Response.StatusCode = 202;
 });
+app.MapGet("/time", (ITimeInUTC time) => time.GetUTCTime());
 
 app.Run();
