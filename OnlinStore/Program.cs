@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ICatalog, InMemoryCatalog>();
 builder.Services.AddSingleton<ITimeInUTC, TimeInUTC>();
 builder.Services.AddScoped<IEmailSender, MailKitEmailSender>();
+builder.Services.AddHostedService<SenderEmailBackgroundService>();
 
 var app = builder.Build();
 
@@ -20,8 +21,8 @@ app.UseSwaggerUI();
 
 //var catalog = app.Services.GetService<ICatalog>();
 
-app.MapGet("/", (IEmailSender sender,string message,string subject) => sender.Send("PV011","asp2022pd011@rodion-m.ru","legeon48@mail.ru",
-    subject,message));
+app.MapGet("/email_sender", (IEmailSender sender, string message, string subject) => sender.Send("PV011", 
+    "legeon48@mail.ru", subject,message));
 app.MapGet("/catalog", (ICatalog catalog) =>
 {
     return catalog.GetProducts();
