@@ -1,4 +1,5 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Json;
 using OnlinStore;
 using OnlinStore.Interface;
@@ -10,7 +11,8 @@ builder.Services.Configure<JsonOptions>(options => { options.SerializerOptions.W
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ICatalog, InMemoryCatalog>();
-builder.Services.AddSingleton<ITimeInUTC, TimeInUTC>();
+builder.Services.AddSingleton<IClock,TimeInUTC>();
+builder.Services.Configure<SmtpConfig>(builder.Configuration.GetSection("SmtpConfig"));
 builder.Services.AddScoped<IEmailSender, MailKitEmailSender>();
 builder.Services.AddHostedService<SenderEmailBackgroundService>();
 
@@ -21,8 +23,9 @@ app.UseSwaggerUI();
 
 //var catalog = app.Services.GetService<ICatalog>();
 
-app.MapGet("/email_sender", (IEmailSender sender, string message, string subject) => sender.Send("PV011", 
-    "legeon48@mail.ru", subject,message));
+app.MapGet("/sendmail", (IEmailSender sender, string message, string subject) => sender.Send("PV011", 
+    "legeon48@mail.ru", "test","Hello World!!!"));
+
 app.MapGet("/catalog", (ICatalog catalog) =>
 {
     return catalog.GetProducts();
@@ -39,6 +42,6 @@ app.MapPost("/catalog/clear_product", (ICatalog catalog,HttpContext context) =>
     catalog.ClearProduct();
     context.Response.StatusCode = 202;
 });
-app.MapGet("/time", (ITimeInUTC time) => time.GetUTCTime());
+app.MapGet("/time", (IClock time) => time.GetUTCTime());
 
 app.Run();

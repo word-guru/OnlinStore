@@ -1,9 +1,9 @@
 ﻿namespace OnlinStore;
 
-public class TimeInUTC : ITimeInUTC
+public class TimeInUTC : IClock
 {
-    public string GetUTCTime()
+    public DateTime GetUTCTime()
     {
-        return TimeZoneInfo.ConvertTimeToUtc(DateTime.Now, TimeZoneInfo.Local).ToString("h:mm:ss tt");
+        return TimeZoneInfo.ConvertTimeToUtc(DateTime.Now, TimeZoneInfo.Local);
     }
 }

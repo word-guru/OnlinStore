@@ -13,7 +13,7 @@ public class SenderEmailBackgroundService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var scope = _serviceProvider.CreateScope();
-        var scopeCurrentTime = scope.ServiceProvider.GetRequiredService<ITimeInUTC>();
+        var scopeCurrentTime = scope.ServiceProvider.GetRequiredService<IClock>();
         var scopeSendMessage = scope.ServiceProvider.GetRequiredService<IEmailSender>();
             
         Console.WriteLine("Server started successfully at " + scopeCurrentTime.GetUTCTime());

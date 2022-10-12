@@ -1,4 +1,5 @@
 ﻿using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
 
@@ -7,27 +8,28 @@ namespace OnlinStore;
 public class MailKitEmailSender : IEmailSender, IDisposable
 {
     private readonly SmtpClient _client;
-    public MailKitEmailSender()
+    private readonly SmtpConfig _smtpConfig;
+    public MailKitEmailSender(IOptions<SmtpConfig> options)
     {
         _client = new SmtpClient();
+         _smtpConfig = options.Value;
     }
     public void Send(string fromName,string toEmail,string subject, string bodyHTML)
     {
         var message = new MimeMessage ();
-        var fromEmail = "asp2022pd011@rodion-m.ru";
-        message.From.Add (new MailboxAddress (fromName,fromEmail));
+        message.From.Add (new MailboxAddress (fromName,_smtpConfig.UserName));
         message.To.Add (MailboxAddress.Parse(toEmail));
         message.Subject = subject;
         message.Body = new TextPart (TextFormat.Html) {Text = bodyHTML};
 
         if (!_client.IsConnected)
         {
-            _client.Connect ("smtp.beget.com", 25, false);
+            _client.Connect(_smtpConfig.Host, _smtpConfig.Port, _smtpConfig.UseSsl);
         }
         if (!_client.IsAuthenticated)
         {
             // Note: only needed if the SMTP server requires authentication
-            _client.Authenticate ("asp2022pd011@rodion-m.ru", "6WU4x2be");
+            _client.Authenticate (_smtpConfig.UserName, _smtpConfig.Password);
         }
         _client.Send (message);
         //Disconect();
