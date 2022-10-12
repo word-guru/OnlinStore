@@ -5,7 +5,7 @@ using MimeKit.Text;
 
 namespace OnlinStore;
 
-public class MailKitEmailSender : IEmailSender, IDisposable
+public class MailKitEmailSender : IEmailSender, IAsyncDisposable
 {
     private readonly SmtpClient _client;
     private readonly SmtpConfig _smtpConfig;
@@ -14,7 +14,7 @@ public class MailKitEmailSender : IEmailSender, IDisposable
         _client = new SmtpClient();
          _smtpConfig = options.Value;
     }
-    public void Send(string fromName,string toEmail,string subject, string bodyHTML)
+    public async Task SendAsync(string fromName,string toEmail,string subject, string bodyHTML)
     {
         var message = new MimeMessage ();
         message.From.Add (new MailboxAddress (fromName,_smtpConfig.UserName));
@@ -24,19 +24,20 @@ public class MailKitEmailSender : IEmailSender, IDisposable
 
         if (!_client.IsConnected)
         {
-            _client.Connect(_smtpConfig.Host, _smtpConfig.Port, _smtpConfig.UseSsl);
+           await _client.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, _smtpConfig.UseSsl);
         }
         if (!_client.IsAuthenticated)
         {
             // Note: only needed if the SMTP server requires authentication
-            _client.Authenticate (_smtpConfig.UserName, _smtpConfig.Password);
+            await _client.AuthenticateAsync(_smtpConfig.UserName, _smtpConfig.Password);
         }
-        _client.Send (message);
+       await _client.SendAsync(message);
         //Disconect();
     }
-    public void Dispose()
+    
+    public async ValueTask DisposeAsync()
     {
-        _client.Disconnect(true);
+        await _client.DisconnectAsync(true);
         _client.Dispose();
     }
 }

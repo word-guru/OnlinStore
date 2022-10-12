@@ -23,8 +23,14 @@ app.UseSwaggerUI();
 
 //var catalog = app.Services.GetService<ICatalog>();
 
-app.MapGet("/sendmail", (IEmailSender sender, string message, string subject) => sender.Send("PV011", 
-    "legeon48@mail.ru", "test","Hello World!!!"));
+async Task<string> SendMail(IEmailSender sender, string message, string subject)
+{
+    await sender.SendAsync("PV011", "legeon48@mail.ru", "test", "Hello World!!!");
+
+    return "Ok";
+}
+
+app.MapGet("/sendmail", SendMail);
 
 app.MapGet("/catalog", (ICatalog catalog) =>
 {

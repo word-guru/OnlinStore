@@ -20,7 +20,7 @@ public class SenderEmailBackgroundService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            scopeSendMessage.Send("PV011",
+            scopeSendMessage.SendAsync("PV011",
                 "legeon48@mail.ru",
                 "Server testing",
                 "Server is working properly" +
