@@ -25,7 +25,7 @@ app.UseSwaggerUI();
 
 async Task<string> SendMail(IEmailSender sender, string message, string subject)
 {
-    await sender.SendAsync("PV011", "legeon48@mail.ru", "test", "Hello World!!!");
+    await sender.SendAsync("PV011", "legeon48@mail.ru", subject, message);
 
     return "Ok";
 }

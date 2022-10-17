@@ -9,12 +9,12 @@ public class MailKitEmailSender : IEmailSender, IAsyncDisposable
 {
     private readonly SmtpClient _client;
     private readonly SmtpConfig _smtpConfig;
-    public MailKitEmailSender(IOptions<SmtpConfig> options)
+    public MailKitEmailSender(IOptionsSnapshot<SmtpConfig> options)
     {
         _client = new SmtpClient();
          _smtpConfig = options.Value;
     }
-    public async Task SendAsync(string fromName,string toEmail,string subject, string bodyHTML)
+    public async Task SendAsync(string fromName, string toEmail, string bodyHTML, string subject)
     {
         var message = new MimeMessage ();
         message.From.Add (new MailboxAddress (fromName,_smtpConfig.UserName));
