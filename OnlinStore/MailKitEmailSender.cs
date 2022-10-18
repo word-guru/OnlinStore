@@ -7,15 +7,18 @@ namespace OnlinStore;
 
 public class MailKitEmailSender : IEmailSender, IAsyncDisposable
 {
+    private readonly ILogger<MailKitEmailSender> _logger;
     private readonly SmtpClient _client;
     private readonly SmtpConfig _smtpConfig;
-    public MailKitEmailSender(IOptionsSnapshot<SmtpConfig> options)
+    public MailKitEmailSender(IOptionsSnapshot<SmtpConfig> options,ILogger<MailKitEmailSender> logger)
     {
+        _logger = logger;
         _client = new SmtpClient();
          _smtpConfig = options.Value;
     }
     public async Task SendAsync(string fromName, string toEmail, string bodyHTML, string subject)
     {
+        _logger.LogInformation("Sending a message: {toEmail}",toEmail);
         var message = new MimeMessage ();
         message.From.Add (new MailboxAddress (fromName,_smtpConfig.UserName));
         message.To.Add (MailboxAddress.Parse(toEmail));
