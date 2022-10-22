@@ -34,7 +34,7 @@ public class SenderEmailBackgroundService : BackgroundService
             const int retryCount = 2;
 
             AsyncRetryPolicy policy = Policy.Handle<Exception>()
-                .WaitAndRetryAsync( 5, retryAttempt =>
+                .WaitAndRetryAsync( retryCount, retryAttempt =>
                     TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                     (exception, timeSpan, retryAttempt, context) => {
                         _logger.LogWarning(exception, "Error while sending email. Retrying: {Attempt}", retryAttempt);
