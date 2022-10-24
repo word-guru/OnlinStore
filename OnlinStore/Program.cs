@@ -22,7 +22,6 @@ try
     builder.Services.AddSingleton<ICatalog, InMemoryCatalog>();
     builder.Services.AddSingleton<IClock,TimeInUTC>();
     builder.Services.Configure<SmtpConfig>(builder.Configuration.GetSection("SmtpConfig"));
-//builder.Services.Configure<SmtpConfig>(AddUserSecrets.ConfigureAppConfiguration);
     builder.Services.AddScoped<IEmailSender, MailKitEmailSender>();
     builder.Services.AddHostedService<SenderEmailBackgroundService>();
     builder.Host.UseSerilog((ctx, conf) =>
